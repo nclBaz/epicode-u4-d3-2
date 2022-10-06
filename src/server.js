@@ -8,11 +8,31 @@ import booksRouter from "./api/books/index.js"
 const server = express()
 const port = 3001
 
+// *************************************** MIDDLEWARES *************************************
+
+const loggerMiddleware = (req, res, next) => {
+  console.log(
+    `Request method: ${req.method} -- request url: ${req.url} -- ${new Date()}`
+  )
+  req.user = "Miles"
+  next()
+}
+
+const policeOfficer = (req, res, next) => {
+  if (req.user === "Riccardo") {
+    res.status(401).send({ message: "Riccardos are not allowed!" })
+  } else {
+    next()
+  }
+}
+
+server.use(loggerMiddleware)
+server.use(policeOfficer)
 server.use(cors())
 server.use(express.json()) // If you don't add this line BEFORE the endpoints, all requests' bodies will be UNDEFINED
 
 // ************************************* ENDPOINTS ******************************************
-server.use("/users", usersRouter) // /users will be the prefix that all the endpoints in the usersRouter will have
+server.use("/users", loggerMiddleware, usersRouter) // /users will be the prefix that all the endpoints in the usersRouter will have
 server.use("/books", booksRouter)
 
 server.listen(port, () => {

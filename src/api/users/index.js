@@ -67,7 +67,7 @@ usersRouter.post("/", (request, response) => {
 usersRouter.get("/", (request, response) => {
   // 1. Read the content of users.json file
   const fileContent = fs.readFileSync(usersJSONPath) // this gives us back a BUFFER OBJECT (which is machine language)
-  console.log("FILE CONTENT: ", fileContent)
+  /* console.log("FILE CONTENT: ", fileContent) */
 
   // 2. Obtain an array from that file
   const users = JSON.parse(fileContent)

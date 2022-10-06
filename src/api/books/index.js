@@ -29,6 +29,11 @@ const getBooks = () => JSON.parse(fs.readFileSync(booksJSONPath))
 const writeBooks = booksArray =>
   fs.writeFileSync(booksJSONPath, JSON.stringify(booksArray))
 
+const anotherStupidMiddleware = (req, res, next) => {
+  console.log("Hey I am the stupid middleware")
+  next()
+}
+
 booksRouter.post("/", (req, res) => {
   const newBook = { ...req.body, createdAt: new Date(), id: uniqid() }
 
@@ -41,7 +46,7 @@ booksRouter.post("/", (req, res) => {
   res.status(201).send({ id: newBook.id })
 })
 
-booksRouter.get("/", (req, res) => {
+booksRouter.get("/", anotherStupidMiddleware, (req, res) => {
   const books = getBooks()
 
   if (req.query && req.query.category) {

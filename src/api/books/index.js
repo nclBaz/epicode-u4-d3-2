@@ -18,6 +18,7 @@ import { dirname, join } from "path"
 import uniqid from "uniqid"
 import fs from "fs"
 import createHttpError from "http-errors"
+import { checkBooksSchema, checkValidationResult } from "./validator.js"
 
 const { BadRequest, NotFound } = createHttpError
 
@@ -37,21 +38,26 @@ const anotherStupidMiddleware = (req, res, next) => {
   next()
 }
 
-booksRouter.post("/", (req, res, next) => {
-  try {
-    const newBook = { ...req.body, createdAt: new Date(), id: uniqid() }
+booksRouter.post(
+  "/",
+  checkBooksSchema,
+  checkValidationResult,
+  (req, res, next) => {
+    try {
+      const newBook = { ...req.body, createdAt: new Date(), id: uniqid() }
 
-    const books = getBooks()
+      const books = getBooks()
 
-    books.push(newBook)
+      books.push(newBook)
 
-    writeBooks(books)
+      writeBooks(books)
 
-    res.status(201).send({ id: newBook.id })
-  } catch (error) {
-    next(error)
+      res.status(201).send({ id: newBook.id })
+    } catch (error) {
+      next(error)
+    }
   }
-})
+)
 
 booksRouter.get("/", anotherStupidMiddleware, (req, res, next) => {
   try {

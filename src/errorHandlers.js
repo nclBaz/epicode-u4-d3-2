@@ -1,6 +1,6 @@
 export const badRequestHandler = (err, req, res, next) => {
   if (err.status === 400) {
-    res.status(400).send({ message: err.message })
+    res.status(400).send({ message: err.message, errorsList: err.errorsList })
   } else {
     // If I am not responsible for that error I am going to pass it next
     next(err)
